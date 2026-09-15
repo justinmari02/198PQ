@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetism Concepts & Problem Solving Practice Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <style>
+        .option-card:hover { transform: translateY(-1px); }
+        .selected-option { border-color: #3b82f6; background-color: #eff6ff; }
+        .correct-option { border-color: #10b981; background-color: #ecfdf5; }
+        .incorrect-option { border-color: #ef4444; background-color: #fef2f2; }
+        .hidden-page { display: none !important; }
+        .fade-in { animation: fadeIn .35s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 md:py-4 flex flex-row justify-between items-center">
+            <div>
+                <h1 class="text-lg md:text-xl font-bold text-blue-400">Practice Quiz</h1>
+                <p id="header-subtitle" class="text-xs text-slate-400">Diodes: Concepts &amp; Problem Solving (30 Items)</p>
+            </div>
+            <div id="header-progress" class="hidden-page text-right">
+                <span id="progress-label" class="text-xs text-slate-400 block">Progress</span>
+                <span id="progress-text" class="text-base md:text-lg font-bold text-blue-400">0 / 30</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============ PAGE 1: START ============ -->
+    <main id="page-start" class="flex-grow max-w-xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center fade-in">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200 space-y-6 text-center">
+            <div class="space-y-2">
+                <h2 class="text-xl font-bold text-slate-800">Diodes: Concepts &amp; Problem Solving</h2>
+                <p class="text-sm text-slate-500">30 questions covering Correlation 2: Magnetism. Passing score is 75%. Every attempt shuffles the question order.</p>
+            </div>
+            <button onclick="startQuiz()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">
+                Start Quiz
+            </button>
+        </div>
+    </main>
+
+    <!-- ============ PAGE 2: QUIZ ============ -->
+    <main id="page-quiz" class="hidden-page flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 fade-in">
+        <aside class="lg:col-span-1 bg-white p-4 rounded-xl shadow-sm border border-slate-200 h-fit lg:sticky lg:top-20">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Question Navigator</h2>
+                <span id="answered-count" class="text-xs text-slate-500 lg:hidden">0 / 30 Answered</span>
+            </div>
+            <div id="nav-grid" class="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-5 gap-2 max-h-48 lg:max-h-96 overflow-y-auto pr-1"></div>
+            <div class="mt-4 lg:mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row lg:flex-col gap-2">
+                <button id="submit-btn" onclick="submitQuiz()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-sm text-sm">
+                    Submit Quiz
+                </button>
+                <button id="retake-btn" onclick="backToStart()" class="hidden-page w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                    Retake Quiz (Shuffled)
+                </button>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-3 flex flex-col gap-6">
+            <div id="quiz-container" class="space-y-6"></div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 text-center mt-auto border-t border-slate-800">
+        Interactive Review Test based on Electronics Devices &amp; Circuits 1 Reference Material.
+    </footer>
+
+    <script>
+        const PASS_THRESHOLD = 75; // percent
+
+const questionsData = [
+    {
+        id: 1,
+        question: "What conditions must be met for a moving charge to experience a magnetic force in a magnetic field?",
+        options: [
+            "The charge must be stationary and perpendicular to the field.",
+            "The charge must be moving with a velocity component perpendicular to the magnetic field.",
+            "The charge must move parallel to the magnetic field direction.",
+            "The charge must be neutral and have zero velocity."
+        ],
+        answer: 1,
+        rationale: "A moving charge experiences a magnetic force only when its velocity has a component perpendicular to the magnetic field direction ($F_B = |q|vB\\sin\\theta$)."
+    },
+    {
+        id: 2,
+        question: "A proton is moving in the positive $x$-direction through a magnetic field in the negative $z$-direction. What is the direction of the magnetic force exerted on the proton?",
+        options: [
+            "Positive $z$-direction",
+            "Negative $x$-direction",
+            "Positive $y$-direction",
+            "Negative $y$-direction"
+        ],
+        answer: 2,
+        rationale: "Using the cross-product direction for a positive charge ($\vec{F} = q(\vec{v} \times \vec{B})$), $\hat{i} \times (-\hat{k}) = \hat{j}$ (positive $y$-direction)."
+    },
+    {
+        id: 3,
+        question: "A proton moves with a velocity $\\vec{v} = (6\\hat{i} - 4\\hat{j} + \\hat{k})\\text{ m/s}$ in a region where the magnetic field is $\\vec{B} = (\\hat{i} + 2\\hat{j} - \\hat{k})\\text{ T}$. What is the magnitude of the magnetic force this particle experiences?",
+        options: [
+            "$8.12 \\times 10^{-18}\\text{ N}$",
+            "$1.82 \\times 10^{-18}\\text{ N}$",
+            "$2.18 \\times 10^{-18}\\text{ N}$",
+            "$2.81 \\times 10^{-18}\\text{ N}$"
+        ],
+        answer: 3,
+        rationale: "Evaluating the cross product $\\vec{v} \\times \\vec{B}$ and multiplying by the elementary charge $q \\approx 1.602 \\times 10^{-19}\\text{ C}$ yields a force magnitude of approximately $2.81 \\times 10^{-18}\\text{ N}$."
+    },
+    {
+        id: 4,
+        question: "What is the magnetic force exerted on a stationary charge when it is placed in a magnetic field?",
+        options: [
+            "Zero",
+            "Maximum",
+            "Minimum non-zero value",
+            "Depends on the strength of the magnetic field"
+        ],
+        answer: 0,
+        rationale: "Since velocity $v = 0$, the magnetic force formula $F_B = |q|vB\\sin\\theta$ evaluates to zero."
+    },
+    {
+        id: 5,
+        question: "Identify the angle $\\theta$ between the velocity and a uniform magnetic field under which the magnetic force acting on a moving charge is minimum.",
+        options: [
+            "$\\theta = 90^\\circ$",
+            "$\\theta = 180^\\circ$",
+            "$\\theta = 270^\\circ$",
+            "$\\theta = 340^\\circ$"
+        ],
+        answer: 1,
+        rationale: "The force is proportional to $\\sin\\theta$. When $\\theta = 180^\\circ$ (or $0^\\circ$), $\\sin(180^\\circ) = 0$, making the magnetic force minimum (zero)."
+    },
+    {
+        id: 6,
+        question: "What is the total magnetic flux passing through a surface given by $x = 0$, $0 < y < 40\\text{ m}$, $0 < z < 2\\text{ m}$, at $t = 1\\text{ }\\mu\\text{s}$, if $B_x = 2 \\times 10^{-4}\\cos(10^5 t)\\sin(10^{-3} y)\\text{ T}$?",
+        options: [
+            "$0.318\\text{ mWb}$",
+            "$0.413\\text{ mWb}$",
+            "$0.134\\text{ mWb}$",
+            "$0.813\\text{ mWb}$"
+        ],
+        answer: 0,
+        rationale: "Integrating $B_x$ over the given surface area bounds yields an accumulated magnetic flux of $0.318\\text{ mWb}$."
+    },
+    {
+        id: 7,
+        question: "What magnetic field strength is required for an electron to move in a circular path with a frequency of $2450\\text{ MHz}$?",
+        options: [
+            "$0.0912\\text{ T}$",
+            "$0.0681\\text{ T}$",
+            "$0.0876\\text{ T}$",
+            "$0.0785\\text{ T}$"
+        ],
+        answer: 2,
+        rationale: "Using the cyclotron frequency relation $B = \\frac{2 \\pi f m}{q}$, substituting $f = 2450\\text{ MHz}$ gives $B \\approx 0.0876\\text{ T}$."
+    },
+    {
+        id: 8,
+        question: "Which of the following situations results in zero magnetic force on a straight current-carrying conductor placed in a uniform magnetic field?",
+        options: [
+            "Current is perpendicular to the magnetic field.",
+            "Current is parallel or antiparallel to the magnetic field.",
+            "Current flows at a $45^\\circ$ angle to the field.",
+            "The conductor length is maximized."
+        ],
+        answer: 1,
+        rationale: "The magnetic force on a wire is $F_B = ILB\\sin\\theta$. When the current is parallel or antiparallel ($0^\\circ$ or $180^\\circ$), $\\sin\\theta = 0$."
+    },
+    {
+        id: 9,
+        question: "A wire carries a steady current of $2.4\\text{ A}$. A straight section of the wire is $0.75\\text{ m}$ long and lies along the $x$-axis within a uniform field $\\vec{B} = 1.6\\hat{k}\\text{ T}$. If the current is in the positive $x$-direction, what is the magnetic force on this section of wire?",
+        options: [
+            "$-2.88\\hat{j}\\text{ N}$",
+            "$2.88\\hat{j}\\text{ N}$",
+            "$8.28\\hat{j}\\text{ N}$",
+            "$-8.28\\hat{j}\\text{ N}$"
+        ],
+        answer: 0,
+        rationale: "Using $\\vec{F}_B = I(\\vec{L} \times \\vec{B})$, evaluating $2.4(0.75\\hat{i} \times 1.6\\hat{k}) = 2.88(-1)\\hat{j} = -2.88\\hat{j}\\text{ N}$."
+    },
+    {
+        id: 10,
+        question: "A horizontal rod $0.200\\text{ m}$ long carries a current perpendicular to a uniform horizontal magnetic field of magnitude $0.067\\text{ T}$. The measured magnetic force on the rod is $0.130\\text{ N}$. What is the current?",
+        options: [
+            "$8.8\\text{ A}$",
+            "$9.7\\text{ A}$",
+            "$6.3\\text{ A}$",
+            "$7.4\\text{ A}$"
+        ],
+        answer: 1,
+        rationale: "Rearranging $F_B = ILB\\sin(90^\\circ)$ gives $I = \\frac{0.130\\text{ N}}{0.200\\text{ m} \\times 0.067\\text{ T}} \\approx 9.7\\text{ A}$."
+    },
+    {
+        id: 11,
+        question: "A charged particle moves with a uniform velocity $\\vec{v} = 4\\hat{x}\\text{ m/s}$ in a region where $\\vec{E} = 20\\hat{y}\\text{ V/m}$ and $\\vec{B} = B_0 \\hat{z}\\text{ Wb/m}^2$. Determine $B_0$ such that the velocity of the particle remains constant.",
+        options: [
+            "5",
+            "4",
+            "3",
+            "2"
+        ],
+        answer: 0,
+        rationale: "For constant velocity, net force is zero: $\\vec{E} + (\\vec{v} \times \\vec{B}) = 0 \\implies 20\\hat{y} + (4\\hat{x} \times B_0\\hat{z}) = 0 \\implies 20 - 4B_0 = 0 \\implies B_0 = 5$."
+    },
+    {
+        id: 12,
+        question: "The magnetic field at $40\\text{ cm}$ from a long straight wire is $10^{-6}\\text{ T}$. What current is carried by the wire?",
+        options: [
+            "$2\\text{ A}$",
+            "$3\\text{ A}$",
+            "$4\\text{ A}$",
+            "$5\\text{ A}$"
+        ],
+        answer: 0,
+        rationale: "Using $B = \\frac{\\mu_0 I}{2\\pi r}$, solving for $I = \\frac{B(2\\pi r)}{\\mu_0} = \\frac{10^{-6}(2\\pi)(0.4)}{4\\pi \\times 10^{-7}} = 2\\text{ A}$."
+    },
+    {
+        id: 13,
+        question: "Two parallel wires $20\\text{ cm}$ apart attract each other with a force of $10^{-5}\\text{ N/m}$ length. If the current in one wire is $10\\text{ A}$, find the magnitude of the current in the other wire.",
+        options: [
+            "$1\\text{ A}$",
+            "$2\\text{ A}$",
+            "$3\\text{ A}$",
+            "$4\\text{ A}$"
+        ],
+        answer: 0,
+        rationale: "Using $\\frac{F}{L} = \\frac{\\mu_0 I_1 I_2}{2\\pi r}$, substituting values yields $10^{-5} = \\frac{(4\\pi \\times 10^{-7})(10)(I_2)}{2\\pi(0.20)}$, resulting in $I_2 = 1\\text{ A}$."
+    },
+    {
+        id: 14,
+        question: "A $15.0\\text{-cm}$ long solenoid is closely wound with $600\\text{ turns}$ of wire. The current in the windings is $8.00\\text{ A}$. Compute the magnetic field at a point near the center of the solenoid.",
+        options: [
+            "$0.2153\\text{ T}$",
+            "$0.0687\\text{ T}$",
+            "$0.0402\\text{ T}$",
+            "$0.1123\\text{ T}$"
+        ],
+        answer: 2,
+        rationale: "Using $B = \\frac{\\mu_0 N I}{L} = \\frac{(4\\pi \\times 10^{-7})(600)(8)}{0.15} \\approx 0.0402\\text{ T}$."
+    },
+    {
+        id: 15,
+        question: "A wooden ring with a mean diameter of $14.0\\text{ cm}$ is wound with a toroidal winding of $600\\text{ turns}$. Compute the magnitude of the magnetic field at the center of the cross section when the current is $0.650\\text{ A}$.",
+        options: [
+            "$1.11 \\times 10^{-3}\\text{ T}$",
+            "$1.43 \\times 10^{-3}\\text{ T}$",
+            "$2.14 \\times 10^{-3}\\text{ T}$",
+            "$2.22 \\times 10^{-3}\\text{ T}$"
+        ],
+        answer: 0,
+        rationale: "Using the toroid formula $B = \\frac{\\mu_0 N I}{\\pi d} = \\frac{(4\\pi \\times 10^{-7})(600)(0.65)}{\\pi(0.14)} = 1.11 \\times 10^{-3}\\text{ T}$."
+    },
+    {
+        id: 16,
+        question: "The Biot-Savart law is used to calculate which of the following quantities?",
+        options: [
+            "Electric field due to a point charge",
+            "Magnetic flux through a closed coil",
+            "Energy stored in a magnetic field",
+            "Magnetic field intensity due to a current element"
+        ],
+        answer: 3,
+        rationale: "The Biot-Savart law mathematically describes the magnetic field generated by an infinitesimal current-carrying element ($I d\\vec{L}$)."
+    },
+    {
+        id: 17,
+        question: "The Biot-Savart law in magnetostatics is analogous to which fundamental law in electrostatics, both obeying an inverse-square distance dependence?",
+        options: [
+            "Faraday's Law",
+            "Ampere's Law",
+            "Gauss's Law",
+            "Coulomb's Law"
+        ],
+        answer: 3,
+        rationale: "Both Coulomb's Law for electric fields and the Biot-Savart law for magnetic fields feature an inverse-square dependence on distance $r$ from the source."
+    },
+    {
+        id: 18,
+        question: "A small current element $I d\\vec{L}$ with $d\\vec{L} = 2\\hat{k}\\text{ m}$ and $I = 2\\text{ A}$ is centered at the origin. Find the magnetic field $d\\vec{B}$ on the $x$-axis at $x = -6\\text{ m}$.",
+        options: [
+            "$4.44 \\times 10^{-8}\\hat{j}\\text{ T}$",
+            "$-4.44 \\times 10^{-8}\\hat{i}\\text{ T}$",
+            "$-1.11 \\times 10^{-8}\\hat{j}\\text{ T}$",
+            "$0\\text{ T}$"
+        ],
+        answer: 2,
+        rationale: "Evaluating $d\\vec{B} = \\frac{\\mu_0 I}{4\\pi} \\frac{d\\vec{L} \\times \\vec{r}}{|\\vec{r}|^3}$ with $\\vec{r} = -6\\hat{i}$ gives $\\frac{10^{-7}(2)(2\\hat{k} \\times -6\\hat{i})}{(-6)^3} = -1.11 \\times 10^{-8}\\hat{j}\\text{ T}$."
+    },
+    {
+        id: 19,
+        question: "Using the same current element from the previous question ($I d\\vec{L}$ with $d\\vec{L} = 2\\hat{k}\\text{ m}$ and $I = 2\\text{ A}$ at the origin), find the magnetic field $d\\vec{B}$ on the $z$-axis at $z = 3\\text{ m}$.",
+        options: [
+            "$4.44 \\times 10^{-8}\\hat{j}\\text{ T}$",
+            "$-4.44 \\times 10^{-8}\\hat{i}\\text{ T}$",
+            "$-1.11 \\times 10^{-8}\\hat{j}\\text{ T}$",
+            "$0\\text{ T}$"
+        ],
+        answer: 3,
+        rationale: "The cross product involves $\\hat{k} \\times \\hat{k}$, which equals zero, resulting in a magnetic field of $0\\text{ T}$."
+    },
+    {
+        id: 20,
+        question: "A current distribution gives rise to the magnetic vector potential $\\vec{A} = 3y\\hat{x} + 2x\\hat{y}\\text{ Wb/m}$. Calculate the magnetic flux density $\\vec{B}$.",
+        options: [
+            "$-\\hat{z}$",
+            "$+\\hat{z}$",
+            "$5\\hat{z}$",
+            "$-5\\hat{z}$"
+        ],
+        answer: 0,
+        rationale: "Computing the curl $\\vec{B} = \\nabla \\times \\vec{A} = \\left(\\frac{\\partial}{\\partial x}(2x) - \\frac{\\partial}{\\partial y}(3y)\\right)\\hat{z} = (2 - 3)\\hat{z} = -\\hat{z}$."
+    },
+    {
+        id: 21,
+        question: "Which of the following statements regarding magnetic scalar and vector potentials is correct?",
+        options: [
+            "Magnetic scalar potential exists everywhere in space.",
+            "Magnetic vector potential is undefined in current regions.",
+            "Magnetic scalar potential exists only in current-free regions.",
+            "Magnetic vector potential always has zero curl."
+        ],
+        answer: 2,
+        rationale: "The magnetic scalar potential $V_m$ (where $\\vec{H} = -\\nabla V_m$) is valid only in regions where the current density $\\vec{J} = 0$."
+    },
+    {
+        id: 22,
+        question: "Suppose a point charge is located at the center of a spherical surface. If the radius of the sphere is halved, what happens to the total electric flux through the sphere and the magnitude of the electric field at the surface?",
+        options: [
+            "The flux remains the same, and the electric field increases.",
+            "The flux and electric field both increase.",
+            "The flux and electric field both decrease.",
+            "The flux decreases, and the electric field increases."
+        ],
+        answer: 0,
+        rationale: "By Gauss's law, total flux depends only on enclosed charge ($Q/\\epsilon_0$), so it remains constant. The electric field varies as $1/r^2$, so halving the radius quadruples the field magnitude."
+    },
+    {
+        id: 23,
+        question: "What is the volume charge density $\\rho_v$ corresponding to an electric flux density given by the position vector $\\vec{D} = x\\hat{x} + y\\hat{y} + z\\hat{z}$?",
+        options: [
+            "1",
+            "3",
+            "2",
+            "0"
+        ],
+        answer: 1,
+        rationale: "By Maxwell's first equation, $\\rho_v = \\nabla \\cdot \\vec{D} = \\frac{\\partial x}{\\partial x} + \\frac{\\partial y}{\\partial y} + \\frac{\\partial z}{\\partial z} = 1 + 1 + 1 = 3$."
+    },
+    {
+        id: 24,
+        question: "A closed surface encloses no net charge. What is the total electric flux through this surface?",
+        options: [
+            "$\\epsilon_0$",
+            "$\\mu_0$",
+            "Infinite",
+            "Zero"
+        ],
+        answer: 3,
+        rationale: "Gauss's law states that net flux equals $Q_{\\text{net}}/\\epsilon_0$. If $Q_{\\text{net}} = 0$, the net electric flux is zero."
+    },
+    {
+        id: 25,
+        question: "Identify which of the following expressions is NOT a valid Maxwell's equation for time-varying electromagnetic fields:",
+        options: [
+            "$\\nabla \\times \\vec{E} = -\\frac{\\partial \\vec{B}}{\\partial t}$",
+            "$\\nabla \\cdot \\vec{D} = \\rho_v$",
+            "$\\nabla \\cdot \\vec{B} = 0$",
+            "$\\nabla \\cdot \\vec{E} = -\\frac{\\partial \\vec{B}}{\\partial t}$"
+        ],
+        answer: 3,
+        rationale: "The divergence of the electric field is governed by Gauss's law ($\\nabla \\cdot \\vec{D} = \\rho_v$), not a time derivative of the magnetic field."
+    },
+    {
+        id: 26,
+        question: "The magnetic field intensity is given by $\\vec{H} = 3\\hat{x} + 7y\\hat{y} + 2x\\hat{z}\\text{ A/m}$. Determine the conduction current density $\\vec{J}_c$ in a static regime.",
+        options: [
+            "$-7\\hat{z}$",
+            "$-2\\hat{y}$",
+            "$3\\hat{y}$",
+            "$12\\hat{y}$"
+        ],
+        answer: 1,
+        rationale: "Using Ampere's circuital law $\\vec{J}_c = \\nabla \\times \\vec{H}$. Evaluating the curl yields $-2\\hat{y}$."
+    },
+    {
+        id: 27,
+        question: "Gauss's law for magnetism ($\\nabla \\cdot \\vec{B} = 0$) fundamentally tells us that:",
+        options: [
+            "Net charge in any given volume is zero.",
+            "Magnetic monopoles do not exist.",
+            "The line integral of a magnetic field around a closed loop vanishes.",
+            "Charges must be stationary to produce magnetic fields."
+        ],
+        answer: 1,
+        rationale: "The divergence-free nature of magnetic fields indicates that isolated magnetic poles (monopoles) do not exist in nature."
+    },
+    {
+        id: 28,
+        question: "What is the curl of the electric field ($\\nabla \\times \\vec{E}$) in a static electrostatic field?",
+        options: [
+            "0",
+            "$-\\frac{\\partial \\vec{B}}{\\partial t}$",
+            "$\\vec{J}$",
+            "$\\frac{\\rho}{\\epsilon_0}$"
+        ],
+        answer: 0,
+        rationale: "Electrostatic fields are conservative, meaning their curl is identically zero ($\\nabla \\times \\vec{E} = 0$)."
+    },
+    {
+        id: 29,
+        question: "In which of the following mathematical forms can Maxwell's equations NOT be represented?",
+        options: [
+            "Integral form",
+            "Differential form",
+            "Static form",
+            "Harmonic/Phasor form"
+        ],
+        answer: 2,
+        rationale: "Maxwell's equations describe general electromagnetic phenomena and are not restricted solely to static forms; they are standardly expressed in differential, integral, and phasor/harmonic forms."
+    },
+    {
+        id: 30,
+        question: "Which Maxwell equation incorporates Maxwell's correction term, the displacement current density ($\\frac{\\partial \\vec{D}}{\\partial t}$)?",
+        options: [
+            "Gauss's Law for Electricity",
+            "Gauss's Law for Magnetism",
+            "Faraday's Law of Induction",
+            "Ampere-Maxwell Law"
+        ],
+        answer: 3,
+        rationale: "Maxwell modified Ampere's circuital law by adding the displacement current term to account for time-varying electric fields producing magnetic fields."
+    }
+];
+
+        let quizQuestions = [];      // shuffled copy used for the current attempt
+        let userAnswers = [];
+        let submitted = false;
+        let lastScore = 0;
+
+        // ---------- utils ----------
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function showPage(id) {
+            ['page-start', 'page-quiz'].forEach(p => {
+                document.getElementById(p).classList.toggle('hidden-page', p !== id);
+            });
+            document.getElementById('header-progress').classList.toggle('hidden-page', id !== 'page-quiz');
+            const subtitle = document.getElementById('header-subtitle');
+            if (id === 'page-start') subtitle.innerText = 'Diodes: Concepts & Problem Solving (30 Items)';
+            else subtitle.innerText = submitted ? 'Review your answers below' : 'Answer all 30 items, then submit';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ---------- page 1: start ----------
+        function startQuiz() {
+            quizQuestions = shuffle(questionsData);
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            submitted = false;
+
+            document.getElementById('submit-btn').classList.remove('hidden-page');
+            document.getElementById('submit-btn').disabled = false;
+            document.getElementById('submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('retake-btn').classList.add('hidden-page');
+
+            document.getElementById('progress-label').innerText = 'Progress';
+            document.getElementById('progress-text').className = 'text-base md:text-lg font-bold text-blue-400';
+
+            renderNavGrid();
+            renderQuestions();
+            updateAnsweredCount();
+            showPage('page-quiz');
+        }
+
+        function backToStart() {
+            showPage('page-start');
+        }
+
+        // ---------- page 2: quiz ----------
+        function renderNavGrid() {
+            const grid = document.getElementById('nav-grid');
+            grid.innerHTML = '';
+            quizQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `nav-btn-${idx}`;
+                btn.innerText = idx + 1;
+                btn.className = 'w-8 h-8 rounded text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-200 transition-colors flex items-center justify-center';
+                btn.onclick = () => {
+                    document.getElementById(`question-card-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizQuestions.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.id = `question-card-${idx}`;
+                card.className = 'bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-4';
+
+                let optionsHTML = '';
+                q.options.forEach((opt, optIdx) => {
+                    optionsHTML += `
+                        <label id="opt-label-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})" class="option-card flex items-start p-3 sm:p-3.5 rounded-lg border border-slate-200 cursor-pointer transition-all">
+                            <input type="radio" name="q-${idx}" value="${optIdx}" class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 flex-shrink-0" ${userAnswers[idx] === optIdx ? 'checked' : ''} ${submitted ? 'disabled' : ''}>
+                            <span class="ml-3 text-sm text-slate-700">${opt}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase">Item ${idx + 1} of ${quizQuestions.length}</span>
+                        <span id="status-badge-${idx}" class="text-xs font-medium text-slate-400">Not Answered</span>
+                    </div>
+                    <h3 class="text-sm sm:text-base font-semibold text-slate-800">${q.question}</h3>
+                    <div class="space-y-2.5">${optionsHTML}</div>
+                    <div id="rationale-${idx}" class="hidden mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs sm:text-sm">
+                        <span class="font-bold block mb-1 text-slate-700">Solution / Rationale:</span>
+                        <p class="text-slate-600">${q.rationale}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (window.renderMathInElement) {
+                renderMathInElement(container, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+        }
+
+        function selectOption(qIdx, optIdx) {
+            if (submitted) return;
+            userAnswers[qIdx] = optIdx;
+
+            const navBtn = document.getElementById(`nav-btn-${qIdx}`);
+            navBtn.className = 'w-8 h-8 rounded text-xs font-semibold border border-blue-500 bg-blue-50 text-blue-600 flex items-center justify-center';
+
+            document.getElementById(`status-badge-${qIdx}`).innerText = 'Answered';
+            document.getElementById(`status-badge-${qIdx}`).className = 'text-xs font-medium text-blue-600';
+
+            quizQuestions[qIdx].options.forEach((_, i) => {
+                const label = document.getElementById(`opt-label-${qIdx}-${i}`);
+                if (i === optIdx) {
+                    label.classList.add('selected-option');
+                } else {
+                    label.classList.remove('selected-option');
+                }
+            });
+
+            updateAnsweredCount();
+        }
+
+        function updateAnsweredCount() {
+            const count = userAnswers.filter(a => a !== null).length;
+            const badge = document.getElementById('answered-count');
+            if (badge) badge.innerText = `${count} / ${quizQuestions.length} Answered`;
+            const progressText = document.getElementById('progress-text');
+            if (progressText) progressText.innerText = `${count} / ${quizQuestions.length}`;
+        }
+
+        function submitQuiz() {
+            if (submitted) return;
+            submitted = true;
+
+            let score = 0;
+            quizQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const navBtn = document.getElementById(`nav-btn-${idx}`);
+                const statusBadge = document.getElementById(`status-badge-${idx}`);
+                const rationaleBox = document.getElementById(`rationale-${idx}`);
+
+                rationaleBox.classList.remove('hidden');
+
+                if (userAns === q.answer) {
+                    score++;
+                    navBtn.className = 'w-8 h-8 rounded text-xs font-semibold bg-green-500 text-white border border-green-600 flex items-center justify-center';
+                    statusBadge.innerText = 'Correct';
+                    statusBadge.className = 'text-xs font-bold text-green-600';
+                } else {
+                    navBtn.className = 'w-8 h-8 rounded text-xs font-semibold bg-red-500 text-white border border-red-600 flex items-center justify-center';
+                    statusBadge.innerText = userAns === null ? 'Missed' : 'Incorrect';
+                    statusBadge.className = 'text-xs font-bold text-red-500';
+                }
+
+                q.options.forEach((_, optIdx) => {
+                    const label = document.getElementById(`opt-label-${idx}-${optIdx}`);
+                    label.classList.remove('selected-option');
+                    if (optIdx === q.answer) {
+                        label.classList.add('correct-option');
+                    } else if (optIdx === userAns && userAns !== q.answer) {
+                        label.classList.add('incorrect-option');
+                    }
+                });
+            });
+
+            lastScore = score;
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            const passed = percentage >= PASS_THRESHOLD;
+
+            document.getElementById('submit-btn').classList.add('hidden-page');
+            document.getElementById('retake-btn').classList.remove('hidden-page');
+
+            document.getElementById('progress-label').innerText = passed ? 'Score — Passed' : `Score — need ${PASS_THRESHOLD}%`;
+            const progressText = document.getElementById('progress-text');
+            progressText.innerText = `${score} / ${quizQuestions.length} (${percentage}%)`;
+            progressText.className = passed
+                ? 'text-base md:text-lg font-bold text-emerald-400'
+                : 'text-base md:text-lg font-bold text-red-400';
+
+            document.getElementById('header-subtitle').innerText = 'Review your answers below';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ---------- init ----------
+        window.onload = () => {
+            showPage('page-start');
+        };
+    </script>
+</body>
+</html>
