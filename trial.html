@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diodes Concepts & Problem Solving Practice Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <style>
+        .option-card:hover { transform: translateY(-1px); }
+        .selected-option { border-color: #3b82f6; background-color: #eff6ff; }
+        .correct-option { border-color: #10b981; background-color: #ecfdf5; }
+        .incorrect-option { border-color: #ef4444; background-color: #fef2f2; }
+        .hidden-page { display: none !important; }
+        .fade-in { animation: fadeIn .35s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 md:py-4 flex flex-row justify-between items-center">
+            <div>
+                <h1 class="text-lg md:text-xl font-bold text-blue-400">Practice Quiz</h1>
+                <p id="header-subtitle" class="text-xs text-slate-400">Diodes: Concepts &amp; Problem Solving (30 Items)</p>
+            </div>
+            <div id="header-progress" class="hidden-page text-right">
+                <span id="progress-label" class="text-xs text-slate-400 block">Progress</span>
+                <span id="progress-text" class="text-base md:text-lg font-bold text-blue-400">0 / 30</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============ PAGE 1: START ============ -->
+    <main id="page-start" class="flex-grow max-w-xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center fade-in">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200 space-y-6 text-center">
+            <div class="space-y-2">
+                <h2 class="text-xl font-bold text-slate-800">Diodes: Concepts &amp; Problem Solving</h2>
+                <p class="text-sm text-slate-500">30 questions covering semiconductor theory, PN junctions, Zener/Schottky/Varactor/Tunnel diodes, clippers/clampers, and rectifier &amp; filter calculations. Passing score is 75%. Every attempt shuffles the question order.</p>
+            </div>
+            <button onclick="startQuiz()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm text-sm">
+                Start Quiz
+            </button>
+        </div>
+    </main>
+
+    <!-- ============ PAGE 2: QUIZ ============ -->
+    <main id="page-quiz" class="hidden-page flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 fade-in">
+        <aside class="lg:col-span-1 bg-white p-4 rounded-xl shadow-sm border border-slate-200 h-fit lg:sticky lg:top-20">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Question Navigator</h2>
+                <span id="answered-count" class="text-xs text-slate-500 lg:hidden">0 / 30 Answered</span>
+            </div>
+            <div id="nav-grid" class="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-5 gap-2 max-h-48 lg:max-h-96 overflow-y-auto pr-1"></div>
+            <div class="mt-4 lg:mt-6 pt-4 border-t border-slate-100 flex flex-col sm:flex-row lg:flex-col gap-2">
+                <button id="submit-btn" onclick="submitQuiz()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors shadow-sm text-sm">
+                    Submit Quiz
+                </button>
+                <button id="retake-btn" onclick="backToStart()" class="hidden-page w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                    Retake Quiz (Shuffled)
+                </button>
+            </div>
+        </aside>
+
+        <section class="lg:col-span-3 flex flex-col gap-6">
+            <div id="quiz-container" class="space-y-6"></div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 text-center mt-auto border-t border-slate-800">
+        Interactive Review Test based on Electronics Devices &amp; Circuits 1 Reference Material.
+    </footer>
+
+    <script>
+        const PASS_THRESHOLD = 75; // percent
+
+        const questionsData = [
+            {
+                id: 1,
+                question: "How many valence electrons are present in the outermost orbit of an un-doped Silicon atom within a crystal lattice?",
+                options: ["1", "4", "8", "14"],
+                answer: 1,
+                rationale: "Silicon has an atomic number of 14 with an electron configuration of 2, 8, 4. Thus, it has 4 valence electrons in its outer shell."
+            },
+            {
+                id: 2,
+                question: "What is the band gap energy required for an electron to transition from the valence band to the conduction band in Germanium (Ge) at room temperature?",
+                options: ["0.67 eV", "1.1 eV", "1.43 eV", "5.0 eV"],
+                answer: 0,
+                rationale: "At room temperature, the energy band gap for Germanium is 0.67 eV, Silicon is 1.1 eV, and Gallium Arsenide is 1.43 eV."
+            },
+            {
+                id: 3,
+                question: "Which of the following elements acts as a trivalent impurity when added to silicon to form a P-type semiconductor?",
+                options: ["Phosphorus", "Arsenic", "Antimony", "Boron"],
+                answer: 3,
+                rationale: "Boron, Gallium, Aluminum, and Indium are trivalent impurities (3 valence electrons) used to create P-type materials."
+            },
+            {
+                id: 4,
+                question: "In an N-type semiconductor, what are the majority and minority charge carriers respectively?",
+                options: [
+                    "Majority: holes, Minority: electrons",
+                    "Majority: conduction electrons, Minority: holes",
+                    "Majority: donor ions, Minority: acceptor ions",
+                    "Majority: protons, Minority: valence electrons"
+                ],
+                answer: 1,
+                rationale: "Pentavalent doping provides abundant free electrons (majority carriers), while thermally generated holes act as minority carriers."
+            },
+            {
+                id: 5,
+                question: "What happens to the barrier potential and depletion layer width of a PN junction diode under reverse-bias conditions?",
+                options: [
+                    "Depletion region narrows, barrier potential decreases",
+                    "Depletion region widens, barrier potential increases",
+                    "Depletion region remains unchanged, barrier potential drops to zero",
+                    "Depletion region completely disappears"
+                ],
+                answer: 1,
+                rationale: "Reverse bias pulls majority carriers away from the PN junction, widening the depletion region and increasing the barrier potential."
+            },
+            {
+                id: 6,
+                question: "The small reverse current flowing across a reverse-biased PN junction prior to breakdown is called:",
+                options: ["Forward current", "Avalanche injection current", "Reverse leakage current", "Diffusion current"],
+                answer: 2,
+                rationale: "Reverse leakage current (or saturation current $I_S$) is caused by thermally generated minority carriers crossing the barrier."
+            },
+            {
+                id: 7,
+                question: "A diode is best categorized as what type of circuit component?",
+                options: [
+                    "Bilateral and linear device",
+                    "Unilateral and non-linear device",
+                    "Passive and bilateral device",
+                    "Unipolar and linear device"
+                ],
+                answer: 1,
+                rationale: "A diode conducts current primarily in one direction (unilateral) and possesses a non-linear current-voltage characteristic curve."
+            },
+            {
+                id: 8,
+                question: "In the practical diode approximation model, a forward-biased silicon diode is represented by:",
+                options: [
+                    "An ideal closed switch",
+                    "A 0.7 V equivalent voltage source in series with an open switch",
+                    "A 0.7 V equivalent voltage source in series with a closed switch",
+                    "An ideal open switch"
+                ],
+                answer: 2,
+                rationale: "The practical model includes the knee voltage barrier ($V_B = 0.7\\text{ V}$ for Si) in series with an ideal switch."
+            },
+            {
+                id: 9,
+                question: "A 12 V DC source powers a series circuit containing a Germanium diode ($V_D = 0.3\\text{ V}$), a Silicon diode ($V_D = 0.7\\text{ V}$), and a load resistor $R_L$. If the circuit current is $2\\text{ mA}$, determine $R_L$.",
+                options: ["$5.0\\text{ k}\\Omega$", "$5.5\\text{ k}\\Omega$", "$6.0\\text{ k}\\Omega$", "$6.7\\text{ k}\\Omega$"],
+                answer: 1,
+                rationale: "Applying Kirchhoff's Voltage Law: $V_E - V_{Ge} - V_{Si} - I R_L = 0 \\implies 12 - 0.3 - 0.7 - (2\\text{ mA}) R_L = 0 \\implies 11\\text{ V} = (2\\text{ mA}) R_L \\implies R_L = 5.5\\text{ k}\\Omega$."
+            },
+            {
+                id: 10,
+                question: "A circuit consists of a 0.2 V DC supply connected to a series combination of a Silicon diode ($V_D = 0.7\\text{ V}$) and a $3\\text{ k}\\Omega$ resistor. What is the voltage across the resistor?",
+                options: ["$0\\text{ V}$", "$-0.5\\text{ V}$", "$0.2\\text{ V}$", "$0.44\\text{ V}$"],
+                answer: 0,
+                rationale: "Since the supply voltage ($0.2\\text{ V}$) is less than the Silicon barrier potential ($0.7\\text{ V}$), the diode remains OFF (open circuit). Thus, $I = 0\\text{ A}$ and $V_R = 0\\text{ V}$."
+            },
+            {
+                id: 11,
+                question: "Calculate the static (DC) resistance $R_D$ of a diode operating at $V_D = 0.75\\text{ V}$ with a forward current $I_D = 30\\text{ mA}$.",
+                options: ["$0.025\\text{ }\\Omega$", "$0.04\\text{ }\\Omega$", "$25\\text{ }\\Omega$", "$40\\text{ }\\Omega$"],
+                answer: 2,
+                rationale: "$R_D = \\frac{V_D}{I_D} = \\frac{0.75\\text{ V}}{30 \\times 10^{-3}\\text{ A}} = 25\\text{ }\\Omega$."
+            },
+            {
+                id: 12,
+                question: "Find the dynamic (AC) resistance $r'_d$ of a diode at room temperature if the DC forward current through it is $13\\text{ mA}$.",
+                options: ["$2\\text{ }\\Omega$", "$13\\text{ }\\Omega$", "$26\\text{ }\\Omega$", "$0.5\\text{ }\\Omega$"],
+                answer: 0,
+                rationale: "$r'_d = \\frac{26\\text{ mV}}{I_D} = \\frac{26\\text{ mV}}{13\\text{ mA}} = 2\\text{ }\\Omega$."
+            },
+            {
+                id: 13,
+                question: "A silicon diode has a reverse saturation current $I_S = 50\\text{ nA}$ at room temperature ($25^\\circ\\text{C}$). If the temperature increases by $50^\\circ\\text{C}$, what is the new reverse saturation current $I'_S$?",
+                options: ["$105.56\\text{ nA}$", "$287.73\\text{ nA}$", "$827.89\\text{ nA}$", "$1.66\\text{ }\\mu\\text{A}$"],
+                answer: 3,
+                rationale: "Using the formula $I'_S = I_S e^{k(T_2 - T_1)}$ where $k = 0.07/^\\circ\\text{C}$: $I'_S = 50\\text{ nA} \\times e^{0.07(50)} = 50\\text{ nA} \\times e^{3.5} = 50\\text{ nA} \\times 33.1154 \\approx 1.66\\text{ }\\mu\\text{A}$."
+            },
+            {
+                id: 14,
+                question: "What special operational feature makes a Zener diode suitable for voltage regulation circuits?",
+                options: ["High forward resistance", "Ability to operate safely in reverse breakdown with constant voltage", "Negative dynamic capacitance", "Light emission under reverse bias"],
+                answer: 1,
+                rationale: "Zener diodes are specifically engineered to operate in the reverse breakdown region, maintaining an almost constant breakdown voltage $V_Z$ across varying currents."
+            },
+            {
+                id: 15,
+                question: "For a Zener diode voltage regulator with input voltage $V_i = 16\\text{ V}$, series resistance $R = 1\\text{ k}\\Omega$, load resistance $R_L = 1.2\\text{ k}\\Omega$, and $V_Z = 10\\text{ V}$, determine the actual load voltage $V_L$.",
+                options: ["$8.73\\text{ V}$", "$10.0\\text{ V}$", "$12.0\\text{ V}$", "$16.0\\text{ V}$"],
+                answer: 0,
+                rationale: "First check if Zener turns ON by calculating open-circuit voltage: $V = V_i \\left(\\frac{R_L}{R + R_L}\\right) = 16 \\left(\\frac{1.2\\text{ k}}{1\\text{ k} + 1.2\\text{ k}}\\right) = 8.73\\text{ V}$. Since $V < V_Z$ ($8.73\\text{ V} < 10\\text{ V}$), the Zener is OFF, so $V_L = 8.73\\text{ V}$."
+            },
+            {
+                id: 16,
+                question: "For the same regulator ($V_i = 16\\text{ V}$, $R = 1\\text{ k}\\Omega$, $V_Z = 10\\text{ V}$), if $R_L$ is changed to $3\\text{ k}\\Omega$, what is the load voltage $V_L$?",
+                options: ["$8.73\\text{ V}$", "$10.0\\text{ V}$", "$12.0\\text{ V}$", "$15.0\\text{ V}$"],
+                answer: 1,
+                rationale: "Testing open-circuit voltage: $V = 16 \\left(\\frac{3\\text{ k}}{1\\text{ k} + 3\\text{ k}}\\right) = 12\\text{ V}$. Since $V \\ge V_Z$ ($12\\text{ V} \\ge 10\\text{ V}$), the Zener turns ON and clamps the output to $V_L = V_Z = 10\\text{ V}$."
+            },
+            {
+                id: 17,
+                question: "When the reverse bias voltage across a Varactor diode is increased, its depletion capacitance:",
+                options: ["Increases", "Decreases", "Remains constant", "Drops to negative values"],
+                answer: 1,
+                rationale: "Increasing reverse bias widens the depletion layer ($d$). Since capacitance $C = \\frac{\\epsilon A}{d}$, widening $d$ reduces the junction capacitance."
+            },
+            {
+                id: 18,
+                question: "Which semiconductor diode exhibits a unique 'Negative Resistance' region in its $V-I$ characteristic curve due to quantum mechanical tunneling?",
+                options: ["Schottky Diode", "Varactor Diode", "Tunnel Diode", "PIN Diode"],
+                answer: 2,
+                rationale: "Tunnel diodes are heavily doped PN junctions that exhibit negative differential resistance over a portion of their forward characteristic curve due to quantum tunneling."
+            },
+            {
+                id: 19,
+                question: "A Schottky diode differs from a conventional PN junction diode because it features:",
+                options: [
+                    "A metal-to-semiconductor junction, offering faster switching and lower forward voltage drop",
+                    "An intrinsic undoped layer between P and N regions",
+                    "Extremely high reverse breakdown voltage capabilities",
+                    "A heavily doped P-type layer only"
+                ],
+                answer: 0,
+                rationale: "Schottky diodes use a metal-semiconductor junction (unipolar device), resulting in low forward drop ($\\approx 0.3\\text{ V}$) and virtually zero reverse recovery time."
+            },
+            {
+                id: 20,
+                question: "Light Emitting Diodes (LEDs) produce light via which underlying physical process?",
+                options: ["Photo-ionization", "Electroluminescence", "Thermal incandescence", "Avalanche multiplication"],
+                answer: 1,
+                rationale: "LEDs operate on electroluminescence, where forward-injected electrons recombine with holes across the PN junction, releasing photons."
+            },
+            {
+                id: 21,
+                question: "What type of diode circuit is specifically designed to remove or cut off portions of an input signal above or below a designated reference level?",
+                options: ["Clamper", "Clipper (Limiter)", "Voltage Doubler", "Rectifier Filter"],
+                answer: 1,
+                rationale: "Clippers (also called limiters) clip off unwanted upper or lower portions of an AC signal waveform."
+            },
+            {
+                id: 22,
+                question: "A diode clamper circuit must contain which essential combination of reactive and active components?",
+                options: [
+                    "An inductor and a Zener diode",
+                    "A capacitor, a diode, and a resistive load",
+                    "Two diodes and a center-tapped transformer",
+                    "A resistor and a Schottky diode only"
+                ],
+                answer: 1,
+                rationale: "A clamper inserts a DC level into an AC signal using a diode, a capacitor, and a load resistor."
+            },
+            {
+                id: 23,
+                question: "What is the average (DC) output voltage of an ideal half-wave rectifier supplied by a peak AC secondary voltage $V_p = 31.4\\text{ V}$?",
+                options: ["$10.0\\text{ V}$", "$15.7\\text{ V}$", "$20.0\\text{ V}$", "$31.4\\text{ V}$"],
+                answer: 0,
+                rationale: "For a half-wave rectifier: $V_{\\text{ave}} = \\frac{V_p}{\\pi} = \\frac{31.4\\text{ V}}{\\pi} = 10.0\\text{ V}$."
+            },
+            {
+                id: 24,
+                question: "What is the average (DC) output voltage of an ideal full-wave bridge rectifier with a peak secondary input voltage $V_p = 31.4\\text{ V}$?",
+                options: ["$10.0\\text{ V}$", "$15.7\\text{ V}$", "$20.0\\text{ V}$", "$62.8\\text{ V}$"],
+                answer: 2,
+                rationale: "For a full-wave rectifier: $V_{\\text{ave}} = \\frac{2 V_p}{\\pi} = \\frac{2(31.4\\text{ V})}{\\pi} = 20.0\\text{ V}$."
+            },
+            {
+                id: 25,
+                question: "A transformer with a $12\\text{ V}_{\\text{rms}}$ secondary output feeds a practical full-wave bridge rectifier (using silicon diodes). What is the peak DC output voltage $V_{p(\\text{out})}$?",
+                options: ["$11.32\\text{ V}$", "$13.15\\text{ V}$", "$15.57\\text{ V}$", "$16.97\\text{ V}$"],
+                answer: 2,
+                rationale: "First, peak secondary voltage $V_{p(\\text{sec})} = V_{\\text{rms}} \\times \\sqrt{2} = 12 \\times 1.414 = 16.97\\text{ V}$. In a bridge rectifier, two diodes conduct per half-cycle: $V_{p(\\text{out})} = V_{p(\\text{sec})} - 2(0.7) = 16.97 - 1.4 = 15.57\\text{ V}$."
+            },
+            {
+                id: 26,
+                question: "Calculate the RMS ripple voltage $V_{r(\\text{rms})}$ for a full-wave rectifier circuit feeding a load drawing $I_{\\text{DC}} = 40\\text{ mA}$ with a $75\\text{ }\\mu\\text{F}$ filter capacitor at $60\\text{ Hz}$.",
+                options: ["$1.20\\text{ V}$", "$1.28\\text{ V}$", "$1.32\\text{ V}$", "$1.41\\text{ V}$"],
+                answer: 1,
+                rationale: "Formula for full-wave RMS ripple: $V_{r(\\text{rms})} = \\frac{I_{\\text{DC}}}{4 \\sqrt{3} f C} = \\frac{40 \\times 10^{-3}}{4 \\sqrt{3} (60) (75 \\times 10^{-6})} = \\frac{0.04}{0.031177} = 1.283\\text{ V}$."
+            },
+            {
+                id: 27,
+                question: "If the peak rectified voltage for a full-wave filter circuit is $V_p = 40\\text{ V}$, load current $I_{\\text{DC}} = 40\\text{ mA}$, $C = 75\\text{ }\\mu\\text{F}$, and $f = 60\\text{ Hz}$, calculate the filtered DC output voltage $V_{\\text{DC}}$.",
+                options: ["$27.9\\text{ V}$", "$32.12\\text{ V}$", "$37.78\\text{ V}$", "$40.0\\text{ V}$"],
+                answer: 2,
+                rationale: "Peak ripple $V_{r(p)} = \\frac{I_{\\text{DC}}}{4 f C} = \\frac{40 \\times 10^{-3}}{4(60)(75 \\times 10^{-6})} = \\frac{0.04}{0.018} = 2.22\\text{ V}$. Then $V_{\\text{DC}} = V_p - V_{r(p)} = 40 - 2.22 = 37.78\\text{ V}$."
+            },
+            {
+                id: 28,
+                question: "Determine the percent ripple factor $r$ using the values from Questions 26 and 27 ($V_{r(\\text{rms})} = 1.28\\text{ V}$ and $V_{\\text{DC}} = 37.78\\text{ V}$).",
+                options: ["3.39%", "4.59%", "5.03%", "6.59%"],
+                answer: 0,
+                rationale: "Ripple factor $r = \\frac{V_{r(\\text{rms})}}{V_{\\text{DC}}} \\times 100\\% = \\frac{1.28\\text{ V}}{37.78\\text{ V}} \\times 100\\% = 3.388\\% \\approx 3.39\\%$."
+            },
+            {
+                id: 29,
+                question: "Calculate the percent load regulation of a power supply having a no-load voltage $V_{\\text{NL}} = 50\\text{ V}$ and a full-load voltage $V_{\\text{FL}} = 48\\text{ V}$.",
+                options: ["4.17%", "5.27%", "6.27%", "7.17%"],
+                answer: 0,
+                rationale: "$\\text{Load Regulation} = \\frac{V_{\\text{NL}} - V_{\\text{FL}}}{V_{\\text{FL}}} \\times 100\\% = \\frac{50 - 48}{48} \\times 100\\% = \\frac{2}{48} \\times 100\\% = 4.167\\% \\approx 4.17\\%$."
+            },
+            {
+                id: 30,
+                question: "What is the internal voltage dropout across a 7805 fixed linear voltage regulator IC when supplied with an unregulated input voltage of $12\\text{ V}$?",
+                options: ["$5\\text{ V}$", "$12\\text{ V}$", "$7\\text{ V}$", "$17\\text{ V}$"],
+                answer: 2,
+                rationale: "A 7805 IC regulates the output to $+5\\text{ V}$. The voltage dropped internal to the IC regulator is $V_{\\text{in}} - V_{\\text{out}} = 12\\text{ V} - 5\\text{ V} = 7\\text{ V}$."
+            }
+        ];
+
+        let quizQuestions = [];      // shuffled copy used for the current attempt
+        let userAnswers = [];
+        let submitted = false;
+        let lastScore = 0;
+
+        // ---------- utils ----------
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function showPage(id) {
+            ['page-start', 'page-quiz'].forEach(p => {
+                document.getElementById(p).classList.toggle('hidden-page', p !== id);
+            });
+            document.getElementById('header-progress').classList.toggle('hidden-page', id !== 'page-quiz');
+            const subtitle = document.getElementById('header-subtitle');
+            if (id === 'page-start') subtitle.innerText = 'Diodes: Concepts & Problem Solving (30 Items)';
+            else subtitle.innerText = submitted ? 'Review your answers below' : 'Answer all 30 items, then submit';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ---------- page 1: start ----------
+        function startQuiz() {
+            quizQuestions = shuffle(questionsData);
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            submitted = false;
+
+            document.getElementById('submit-btn').classList.remove('hidden-page');
+            document.getElementById('submit-btn').disabled = false;
+            document.getElementById('submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('retake-btn').classList.add('hidden-page');
+
+            document.getElementById('progress-label').innerText = 'Progress';
+            document.getElementById('progress-text').className = 'text-base md:text-lg font-bold text-blue-400';
+
+            renderNavGrid();
+            renderQuestions();
+            updateAnsweredCount();
+            showPage('page-quiz');
+        }
+
+        function backToStart() {
+            showPage('page-start');
+        }
+
+        // ---------- page 2: quiz ----------
+        function renderNavGrid() {
+            const grid = document.getElementById('nav-grid');
+            grid.innerHTML = '';
+            quizQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `nav-btn-${idx}`;
+                btn.innerText = idx + 1;
+                btn.className = 'w-8 h-8 rounded text-xs font-semibold border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-200 transition-colors flex items-center justify-center';
+                btn.onclick = () => {
+                    document.getElementById(`question-card-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizQuestions.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.id = `question-card-${idx}`;
+                card.className = 'bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 space-y-4';
+
+                let optionsHTML = '';
+                q.options.forEach((opt, optIdx) => {
+                    optionsHTML += `
+                        <label id="opt-label-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})" class="option-card flex items-start p-3 sm:p-3.5 rounded-lg border border-slate-200 cursor-pointer transition-all">
+                            <input type="radio" name="q-${idx}" value="${optIdx}" class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 flex-shrink-0" ${userAnswers[idx] === optIdx ? 'checked' : ''} ${submitted ? 'disabled' : ''}>
+                            <span class="ml-3 text-sm text-slate-700">${opt}</span>
+                        </label>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase">Item ${idx + 1} of ${quizQuestions.length}</span>
+                        <span id="status-badge-${idx}" class="text-xs font-medium text-slate-400">Not Answered</span>
+                    </div>
+                    <h3 class="text-sm sm:text-base font-semibold text-slate-800">${q.question}</h3>
+                    <div class="space-y-2.5">${optionsHTML}</div>
+                    <div id="rationale-${idx}" class="hidden mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs sm:text-sm">
+                        <span class="font-bold block mb-1 text-slate-700">Solution / Rationale:</span>
+                        <p class="text-slate-600">${q.rationale}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (window.renderMathInElement) {
+                renderMathInElement(container, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ]
+                });
+            }
+        }
+
+        function selectOption(qIdx, optIdx) {
+            if (submitted) return;
+            userAnswers[qIdx] = optIdx;
+
+            const navBtn = document.getElementById(`nav-btn-${qIdx}`);
+            navBtn.className = 'w-8 h-8 rounded text-xs font-semibold border border-blue-500 bg-blue-50 text-blue-600 flex items-center justify-center';
+
+            document.getElementById(`status-badge-${qIdx}`).innerText = 'Answered';
+            document.getElementById(`status-badge-${qIdx}`).className = 'text-xs font-medium text-blue-600';
+
+            quizQuestions[qIdx].options.forEach((_, i) => {
+                const label = document.getElementById(`opt-label-${qIdx}-${i}`);
+                if (i === optIdx) {
+                    label.classList.add('selected-option');
+                } else {
+                    label.classList.remove('selected-option');
+                }
+            });
+
+            updateAnsweredCount();
+        }
+
+        function updateAnsweredCount() {
+            const count = userAnswers.filter(a => a !== null).length;
+            const badge = document.getElementById('answered-count');
+            if (badge) badge.innerText = `${count} / ${quizQuestions.length} Answered`;
+            const progressText = document.getElementById('progress-text');
+            if (progressText) progressText.innerText = `${count} / ${quizQuestions.length}`;
+        }
+
+        function submitQuiz() {
+            if (submitted) return;
+            submitted = true;
+
+            let score = 0;
+            quizQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const navBtn = document.getElementById(`nav-btn-${idx}`);
+                const statusBadge = document.getElementById(`status-badge-${idx}`);
+                const rationaleBox = document.getElementById(`rationale-${idx}`);
+
+                rationaleBox.classList.remove('hidden');
+
+                if (userAns === q.answer) {
+                    score++;
+                    navBtn.className = 'w-8 h-8 rounded text-xs font-semibold bg-green-500 text-white border border-green-600 flex items-center justify-center';
+                    statusBadge.innerText = 'Correct';
+                    statusBadge.className = 'text-xs font-bold text-green-600';
+                } else {
+                    navBtn.className = 'w-8 h-8 rounded text-xs font-semibold bg-red-500 text-white border border-red-600 flex items-center justify-center';
+                    statusBadge.innerText = userAns === null ? 'Missed' : 'Incorrect';
+                    statusBadge.className = 'text-xs font-bold text-red-500';
+                }
+
+                q.options.forEach((_, optIdx) => {
+                    const label = document.getElementById(`opt-label-${idx}-${optIdx}`);
+                    label.classList.remove('selected-option');
+                    if (optIdx === q.answer) {
+                        label.classList.add('correct-option');
+                    } else if (optIdx === userAns && userAns !== q.answer) {
+                        label.classList.add('incorrect-option');
+                    }
+                });
+            });
+
+            lastScore = score;
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            const passed = percentage >= PASS_THRESHOLD;
+
+            document.getElementById('submit-btn').classList.add('hidden-page');
+            document.getElementById('retake-btn').classList.remove('hidden-page');
+
+            document.getElementById('progress-label').innerText = passed ? 'Score — Passed' : `Score — need ${PASS_THRESHOLD}%`;
+            const progressText = document.getElementById('progress-text');
+            progressText.innerText = `${score} / ${quizQuestions.length} (${percentage}%)`;
+            progressText.className = passed
+                ? 'text-base md:text-lg font-bold text-emerald-400'
+                : 'text-base md:text-lg font-bold text-red-400';
+
+            document.getElementById('header-subtitle').innerText = 'Review your answers below';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ---------- init ----------
+        window.onload = () => {
+            showPage('page-start');
+        };
+    </script>
+</body>
+</html>
